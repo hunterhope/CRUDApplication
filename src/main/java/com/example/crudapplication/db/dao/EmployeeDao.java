@@ -31,4 +31,6 @@ public interface EmployeeDao {
     @Query("select id from employee")
     List<Long> selectAllIds();
 
+    @Query("select * from employee")
+    List<Employee> getAllEmployees();
 }

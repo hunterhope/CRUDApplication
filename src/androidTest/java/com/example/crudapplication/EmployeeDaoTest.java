@@ -32,11 +32,12 @@ import java.util.Set;
 public class EmployeeDaoTest {
     private AppDatabase db;
     private EmployeeDao employeeDao;
-    private final Object waitResultKey=new Object();;
+    private final Object waitResultKey=new Object();
     @Before
     public void createDb() {
         Context context = ApplicationProvider.getApplicationContext();
-        db = Room.databaseBuilder(context, AppDatabase.class, "test.db").build();
+//        db = Room.databaseBuilder(context, AppDatabase.class, "test.db").build();
+        db = Room.inMemoryDatabaseBuilder(context,AppDatabase.class).build();
         employeeDao = db.employeeDao();
     }
 
@@ -60,6 +61,7 @@ public class EmployeeDaoTest {
         });
         waitResult();
     }
+
     private void notifyWaiter(){
         synchronized (waitResultKey){
             waitResultKey.notifyAll();
@@ -72,6 +74,7 @@ public class EmployeeDaoTest {
         }
         Log.d("test","測試結束");
     }
+
     @Test
     public void count() {
         //刪除所有資料
@@ -86,18 +89,16 @@ public class EmployeeDaoTest {
 
     @Test
     public void delete() {
-        //查詢所有id
-        List<Long> ids=employeeDao.selectAllIds();
+        //查出所有資料
+        Long firstId = getFirstId();
         //刪除第1比
-        Set<Long> deleteIds= Collections.singleton(ids.get(0));
+        Set<Long> deleteIds= Collections.singleton(firstId);
         employeeDao.delete(deleteIds);
         //在查詢全部則無該筆資料
         List<Long> afterDeleteIds=employeeDao.selectAllIds();
         assertFalse(afterDeleteIds.contains(deleteIds));
     }
-
-    @Test
-    public void update() throws InterruptedException {
+    private Long getFirstId(){
         //查出所有資料
         Long firstId;
         List<Long> allIds = employeeDao.selectAllIds();
@@ -106,6 +107,12 @@ public class EmployeeDaoTest {
         }else{
             firstId=allIds.get(0);
         }
+        return firstId;
+    }
+    @Test
+    public void update() throws InterruptedException {
+        //查出所有資料
+        Long firstId = getFirstId();
         //選擇第一筆
         Employee updateEmployee = TestUtil.createEmployee();
         updateEmployee.id=firstId;

@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData;
 import com.example.crudapplication.db.AppDatabase;
 import com.example.crudapplication.db.entity.Employee;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -46,5 +45,9 @@ public class EmployeeRepository {
             db.employeeDao().update(employee);
             return true;
         },executor);
+    }
+
+    public List<Employee> getAllSync() {
+        return db.employeeDao().getAllEmployees();
     }
 }

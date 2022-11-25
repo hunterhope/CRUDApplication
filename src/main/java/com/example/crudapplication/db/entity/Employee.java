@@ -2,6 +2,7 @@ package com.example.crudapplication.db.entity;
 
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
@@ -18,6 +19,7 @@ public class Employee {
     public Employee() {
     }
 
+    @Ignore
     public Employee(Long id, String name, Integer age, String phone) {
         this.id = id;
         this.name = name;
@@ -25,6 +27,7 @@ public class Employee {
         this.phone = phone;
     }
 
+    @Ignore
     public Employee(String name, Integer age, String phone) {
         this.name = name;
         this.age = age;
