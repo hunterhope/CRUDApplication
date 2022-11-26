@@ -5,8 +5,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
@@ -15,6 +13,7 @@ import com.example.crudapplication.db.entity.Employee;
 import com.example.crudapplication.repository.EmployeeRepository;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -22,13 +21,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 @RunWith(JUnit4.class)
 public class ResultViewModelTest {
-    @Rule
+    @Rule//讓執行緒符合結構元件要的執行緒
     public InstantTaskExecutorRule instantExecutorRule = new InstantTaskExecutorRule();
 
     @Mock
@@ -97,7 +101,7 @@ public class ResultViewModelTest {
         verify(deleteDataObserver,times(2)).onChanged(expectedUnchecked);
     }
 
-    private void letViewModelHasUiState(){
+    private List<Employee> letViewModelHasUiState(){
         List<Employee> dbData = TestUtil.createTestDBData();
         //當數據庫被呼叫,回傳測試資料LiveData
         when(employeeRepository.getAll()).thenReturn(new MutableLiveData<>(dbData));
@@ -114,11 +118,33 @@ public class ResultViewModelTest {
         expected.add(new EmployeeUiState(
                 2L,"Mary",3,"0978570985",false,false,null,null));
         verify(employeeUiStateObserver).onChanged(expected);
+        return dbData;
     }
 
     @Test
     public void deleteUserSelectData() {
-
+        //測試資料準備
+        List<Employee> dbData = letViewModelHasUiState();
+        resultViewModel.getDeleteBtnVisible().observeForever(deleteDataObserver);//一般而言觀察者會在onCreate加入,所以這必須寫在 勾選第2筆 之前,不然裡面的setValue會碰到null
+        //勾選第2筆
+        EmployeeUiState uiState2 = resultViewModel.getAllEmployeeStates().get(1);
+        uiState2.idClick(true);
+        //模擬動作
+        when(employeeRepository.delete(Collections.singleton(uiState2.getId()))).then(new Answer<CompletableFuture<Boolean>>() {
+            @Override
+            public CompletableFuture<Boolean> answer(InvocationOnMock invocation) throws Throwable {
+                Set<Long> ids =invocation.getArgument(0);
+                ids.forEach(deleteId-> dbData.removeIf(e->e.id.equals(deleteId)));
+                return CompletableFuture.completedFuture(true);//這邊回傳是要讓viewModel真的動作,因為他還有後續動作
+            }
+        }).thenReturn(CompletableFuture.completedFuture(true));//這邊是模擬回傳的結果,因為employeeRepository是模擬,所以employeeRepository.delete()一定要有thenReturn
+        //測試方法
+        resultViewModel.deleteUserSelectData();
+        //預期結果 dbData.size()==1 或是內部的 deleteDataObserver 要等於false
+        Assert.assertEquals(1, dbData.size());
+        System.out.println("DB資料");
+        System.out.println(dbData);
+        verify(deleteDataObserver).onChanged(false);
     }
 
     @Test
@@ -143,41 +169,5 @@ public class ResultViewModelTest {
 
     @Test
     public void msgHasShow() {
-    }
-
-    @Test
-    public void testGetAllEmployee() {
-    }
-
-    @Test
-    public void testGetDeleteDataIsEmpty() {
-    }
-
-    @Test
-    public void testDeleteUserSelectData() {
-    }
-
-    @Test
-    public void testGetUpdateData() {
-    }
-
-    @Test
-    public void testUpdateOrCreateEmployee() {
-    }
-
-    @Test
-    public void testCreateEmployee() {
-    }
-
-    @Test
-    public void testGetScrollTo() {
-    }
-
-    @Test
-    public void testGetToastId() {
-    }
-
-    @Test
-    public void testMsgHasShow() {
     }
 }
