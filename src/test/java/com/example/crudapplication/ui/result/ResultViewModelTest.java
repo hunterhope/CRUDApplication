@@ -75,7 +75,7 @@ public class ResultViewModelTest {
                 1L,"John",2,"0968751923",false,false,null,null));
         expected.add(new EmployeeUiState(
                 2L,"Mary",3,"0978570985",false,false,null,null));
-        verify(employeeUiStateObserver).onChanged(expected);
+        Assert.assertEquals(expected,resultViewModel.getAllEmployeeStates());
         System.out.println("預期資料");
         System.out.println(expected);
 
@@ -114,7 +114,7 @@ public class ResultViewModelTest {
                 1L,"John",2,"0968751923",false,false,null,null));
         expected.add(new EmployeeUiState(
                 2L,"Mary",3,"0978570985",false,false,null,null));
-        verify(employeeUiStateObserver).onChanged(expected);
+        Assert.assertEquals(expected,resultViewModel.getAllEmployeeStates());
         return dbData;
     }
 

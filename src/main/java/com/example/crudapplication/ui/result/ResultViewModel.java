@@ -54,6 +54,7 @@ public class ResultViewModel extends ViewModel {
 
     public LiveData<List<EmployeeUiState>> getAllEmployee() {
         return Transformations.map(employeeRepository.getAll(), input -> {
+            System.out.println("收到DB資料");
             System.out.println(input);
                     employeeUiStates = input.stream()
                             .map(e ->{
@@ -84,7 +85,6 @@ public class ResultViewModel extends ViewModel {
                 .whenComplete((success, throwable) -> {
                     if (throwable == null) {
                         deleteData.clear();
-                        System.out.println("執行清除");
                         deleteBtnVisible.postValue(false);
                     }
                 });

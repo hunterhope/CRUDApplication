@@ -28,42 +28,43 @@ public class EmployeeRepository {
     public EmployeeRepository(AppDatabase db, Executor executor) {
         this.db = db;
         this.executor = executor;
-        remoteDS=null;
+        remoteDS = null;
     }
 
-    public void getAllServerData(){
-        CompletableFuture.runAsync(()->{
-            if(remoteDS!=null){
-                List<Employee> latestEmployees=remoteDS.getAll();
-                db.runInTransaction(()->{
+    public void getAllServerData() {
+        if (remoteDS != null) {
+            CompletableFuture.runAsync(() -> {
+                List<Employee> latestEmployees = remoteDS.getAll();
+                db.runInTransaction(() -> {
                     db.employeeDao().deleteAll();
                     db.employeeDao().insert(latestEmployees.toArray(new Employee[0]));
                 });
-            }
-        },executor);
+            }, executor);
+        }
     }
+
     public LiveData<List<Employee>> getAll() {
         getAllServerData();
         return db.employeeDao().getAll();
     }
 
     public CompletableFuture<Void> delete(Set<Long> deleteData) {
-        return CompletableFuture.runAsync(()-> {
-            if(remoteDS!=null){
+        return CompletableFuture.runAsync(() -> {
+            if (remoteDS != null) {
                 remoteDS.delete(deleteData);
                 getAllServerData();
-            }else {
+            } else {
                 db.employeeDao().delete(deleteData);
                 //安排WorkerManager帶網路恢復時執行?
             }
-        },executor);
+        }, executor);
     }
 
     public CompletableFuture<Long> createEmployee(Employee employee) {
-        return CompletableFuture.supplyAsync(()-> db.employeeDao().insert(employee)[0],executor);
+        return CompletableFuture.supplyAsync(() -> db.employeeDao().insert(employee)[0], executor);
     }
 
     public CompletableFuture<Void> updateEmployee(Employee employee) {
-        return CompletableFuture.runAsync(()-> db.employeeDao().update(employee),executor);
+        return CompletableFuture.runAsync(() -> db.employeeDao().update(employee), executor);
     }
 }
