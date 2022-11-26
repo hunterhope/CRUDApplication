@@ -42,7 +42,7 @@ public class ResultFragment extends Fragment{
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 ResultFragment.this.menu=menu;
                 menuInflater.inflate(R.menu.result_menu,menu);
-                menu.findItem(R.id.deleteMenu).setVisible(Boolean.FALSE.equals(resultViewModel.getDeleteDataIsEmpty().getValue()));
+                menu.findItem(R.id.deleteMenu).setVisible(Boolean.FALSE.equals(resultViewModel.getDeleteBtnVisible().getValue()));
             }
 
             @Override
@@ -71,9 +71,9 @@ public class ResultFragment extends Fragment{
         binding.employeeRv.setAdapter(employeeAdapter);
         resultViewModel.getAllEmployee()
                 .observe(getViewLifecycleOwner(), employeeUiStates -> employeeAdapter.setEmployeeUiSates(employeeUiStates));
-        resultViewModel.getDeleteDataIsEmpty().observe(getViewLifecycleOwner(), emptyData ->{
+        resultViewModel.getDeleteBtnVisible().observe(getViewLifecycleOwner(), visible ->{
             if(menu!=null){
-                menu.findItem(R.id.deleteMenu).setVisible(!emptyData);
+                menu.findItem(R.id.deleteMenu).setVisible(visible);
             }
         } );
         resultViewModel.getUpdateData().observe(getViewLifecycleOwner(),employeeUiState -> {

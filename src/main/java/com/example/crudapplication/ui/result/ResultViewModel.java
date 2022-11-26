@@ -26,7 +26,7 @@ public class ResultViewModel extends ViewModel {
     private final EmployeeRepository employeeRepository;
     private List<EmployeeUiState> employeeUiStates;
     private final Set<Long> deleteData;
-    private MutableLiveData<Boolean> deleteDataIsEmpty;
+    private MutableLiveData<Boolean> deleteBtnVisible;
     private final BiConsumer<Long, Boolean> deleteChoiceAction;
     private final Consumer<EmployeeUiState> updateAction;
     private final MutableLiveData<EmployeeUiState> updateData;
@@ -46,13 +46,14 @@ public class ResultViewModel extends ViewModel {
             } else {
                 deleteData.remove(id);
             }
-            deleteDataIsEmpty.setValue(deleteData.isEmpty());
+            deleteBtnVisible.setValue(!deleteData.isEmpty());
         };
         updateAction= updateData::setValue;
     }
 
     public LiveData<List<EmployeeUiState>> getAllEmployee() {
         return Transformations.map(employeeRepository.getAll(), input -> {
+            System.out.println(input);
                     employeeUiStates = input.stream()
                             .map(e ->{
                                 return new EmployeeUiState(
@@ -70,11 +71,11 @@ public class ResultViewModel extends ViewModel {
         );
     }
 
-    public LiveData<Boolean> getDeleteDataIsEmpty() {
-        if (deleteDataIsEmpty == null) {
-            deleteDataIsEmpty = new MutableLiveData<>(deleteData.isEmpty());
+    public LiveData<Boolean> getDeleteBtnVisible() {
+        if (deleteBtnVisible == null) {
+            deleteBtnVisible = new MutableLiveData<>(!deleteData.isEmpty());
         }
-        return deleteDataIsEmpty;
+        return deleteBtnVisible;
     }
 
     public void deleteUserSelectData() {
@@ -82,7 +83,7 @@ public class ResultViewModel extends ViewModel {
                 .whenComplete((success, throwable) -> {
                     if (throwable == null) {
                         deleteData.clear();
-                        deleteDataIsEmpty.postValue(true);
+                        deleteBtnVisible.postValue(true);
                     }
                 });
     }
@@ -138,5 +139,9 @@ public class ResultViewModel extends ViewModel {
 
     public void msgHasShow() {
         toastId.setValue(null);
+    }
+
+    public List<EmployeeUiState> getAllEmployeeStates() {
+        return employeeUiStates;
     }
 }

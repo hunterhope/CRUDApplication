@@ -1,12 +1,10 @@
 package com.example.crudapplication.ui.result;
 
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
@@ -26,11 +24,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 @RunWith(JUnit4.class)
 public class ResultViewModelTest {
@@ -43,18 +37,14 @@ public class ResultViewModelTest {
     private ResultViewModel resultViewModel;
 
     @Mock
-    Observer<List<EmployeeUiState>> observer;
-
+    Observer<List<EmployeeUiState>> employeeUiStateObserver;
     @Mock
-    LifecycleOwner lifecycleOwner;
-    @Mock
-    Lifecycle lifecycle;
+    Observer<Boolean> deleteDataObserver;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
         resultViewModel = new ResultViewModel(employeeRepository);
-
     }
 
     @After
@@ -70,45 +60,60 @@ public class ResultViewModelTest {
         //當數據庫被呼叫,回傳測試資料LiveData
         when(employeeRepository.getAll()).thenReturn(new MutableLiveData<>(dbData));
         //加入觀察者
-        resultViewModel.getAllEmployee().observeForever(observer);
+        resultViewModel.getAllEmployee().observeForever(employeeUiStateObserver);
         //驗證,當觀察者改變,所得到資料是不是我預期的
         List<EmployeeUiState> expected = new ArrayList<>();
         /*
-        public EmployeeUiState(
-        Long id,
-        String name,
-        Integer age,
-        String phone,
-        boolean selected,
-        boolean click,
-        BiConsumer<Long, Boolean> deleteChockBox,
-        Consumer<EmployeeUiState> updateAction) {
+        public EmployeeUiState(Long id,String name,Integer age,String phone,boolean selected,boolean click,
+        BiConsumer<Long, Boolean> deleteChockBox,Consumer<EmployeeUiState> updateAction) {
          */
-        Set<Long> deleteData=new HashSet<>();
-        MutableLiveData<Boolean> deleteDataIsEmpty=new MutableLiveData<>();
-        BiConsumer<Long,Boolean> deleteChoiceAction = (id, clicked) -> {
-            if (clicked) {
-                deleteData.add(id);
-            } else {
-                deleteData.remove(id);
-            }
-            deleteDataIsEmpty.setValue(deleteData.isEmpty());
-        };
-        MutableLiveData<EmployeeUiState> updateData = new MutableLiveData<>();
-        Consumer<EmployeeUiState> updateAction= updateData::setValue;
         expected.add(new EmployeeUiState(
-                1L,"John",2,"0968751923",false,false,deleteChoiceAction,updateAction));
+                1L,"John",2,"0968751923",false,false,null,null));
         expected.add(new EmployeeUiState(
-                2L,"Mary",3,"0978570985",false,false,deleteChoiceAction,updateAction));
-        verify(observer).onChanged(expected);
+                2L,"Mary",3,"0978570985",false,false,null,null));
+        verify(employeeUiStateObserver).onChanged(expected);
         System.out.println("預期資料");
         System.out.println(expected);
 
     }
 
     @Test
-    public void getDeleteDataIsEmpty() {
-        assertTrue(true);
+    public void getDeleteBtnIsVisible() {
+        //加入是否有刪除資料的觀察者
+        resultViewModel.getDeleteBtnVisible().observeForever(deleteDataObserver);
+        //測試資料,取得經過getAll()的UI狀態,裡面才有按鈕動作的method
+        letViewModelHasUiState();
+        List<EmployeeUiState> states = resultViewModel.getAllEmployeeStates();
+        //當按下第一筆資料 刪除checkedBox時,要做的動作
+        states.get(0).idClick(true);
+        //驗證 第一筆資料 刪除checkedBox被按下
+        //預期值 true
+        Boolean expectedChecked=true;
+        verify(deleteDataObserver,times(1)).onChanged(expectedChecked);
+        //驗證 第一筆資料 刪除checkedBox再被按下
+        states.get(0).idClick(false);
+        //預期值 false
+        Boolean expectedUnchecked=false;
+        verify(deleteDataObserver,times(2)).onChanged(expectedUnchecked);
+    }
+
+    private void letViewModelHasUiState(){
+        List<Employee> dbData = TestUtil.createTestDBData();
+        //當數據庫被呼叫,回傳測試資料LiveData
+        when(employeeRepository.getAll()).thenReturn(new MutableLiveData<>(dbData));
+        //加入觀察者
+        resultViewModel.getAllEmployee().observeForever(employeeUiStateObserver);
+        //驗證,當觀察者改變,所得到資料是不是我預期的
+        List<EmployeeUiState> expected = new ArrayList<>();
+        /*
+        public EmployeeUiState(Long id,String name,Integer age,String phone,boolean selected,boolean click,
+        BiConsumer<Long, Boolean> deleteChockBox,Consumer<EmployeeUiState> updateAction) {
+         */
+        expected.add(new EmployeeUiState(
+                1L,"John",2,"0968751923",false,false,null,null));
+        expected.add(new EmployeeUiState(
+                2L,"Mary",3,"0978570985",false,false,null,null));
+        verify(employeeUiStateObserver).onChanged(expected);
     }
 
     @Test

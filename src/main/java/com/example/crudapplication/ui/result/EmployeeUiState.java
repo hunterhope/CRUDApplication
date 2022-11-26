@@ -46,12 +46,12 @@ public class EmployeeUiState {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EmployeeUiState that = (EmployeeUiState) o;
-        return Objects.equals(id, that.id);
+        return selected == that.selected && click == that.click && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(age, that.age) && Objects.equals(phone, that.phone);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, name, age, phone, selected, click);
     }
 
     public void idClick(boolean click){
