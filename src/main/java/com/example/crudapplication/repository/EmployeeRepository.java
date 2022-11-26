@@ -40,10 +40,10 @@ public class EmployeeRepository {
                     db.employeeDao().insert(latestEmployees.toArray(new Employee[0]));
                 });
             }
-
         },executor);
     }
     public LiveData<List<Employee>> getAll() {
+        getAllServerData();
         return db.employeeDao().getAll();
     }
 
@@ -52,8 +52,10 @@ public class EmployeeRepository {
             if(remoteDS!=null){
                 remoteDS.delete(deleteData);
                 getAllServerData();
+            }else {
+                db.employeeDao().delete(deleteData);
+                //安排WorkerManager帶網路恢復時執行?
             }
-            db.employeeDao().delete(deleteData);
         },executor);
     }
 

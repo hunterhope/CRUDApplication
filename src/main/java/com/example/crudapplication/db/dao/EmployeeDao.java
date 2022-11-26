@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.example.crudapplication.db.entity.Employee;
@@ -30,9 +31,6 @@ public interface EmployeeDao {
 
     @Query("select id from employee")
     List<Long> selectAllIds();
-
-    @Query("select * from employee")
-    List<Employee> getAllEmployees();
 
     @Query("delete from employee")
     void deleteAll();

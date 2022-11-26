@@ -90,15 +90,12 @@ public class ResultViewModelTest {
         List<EmployeeUiState> states = resultViewModel.getAllEmployeeStates();
         //當按下第一筆資料 刪除checkedBox時,要做的動作
         states.get(0).idClick(true);
-        //驗證 第一筆資料 刪除checkedBox被按下
-        //預期值 true
-        Boolean expectedChecked=true;
-        verify(deleteDataObserver,times(1)).onChanged(expectedChecked);
-        //驗證 第一筆資料 刪除checkedBox再被按下
+        //驗證 預期值 true
+        Assert.assertEquals(true,resultViewModel.getDeleteBtnVisible().getValue());
+        //第一筆資料 刪除checkedBox再被按下
         states.get(0).idClick(false);
-        //預期值 false
-        Boolean expectedUnchecked=false;
-        verify(deleteDataObserver,times(2)).onChanged(expectedUnchecked);
+        //驗證 預期值 false
+        Assert.assertEquals(false,resultViewModel.getDeleteBtnVisible().getValue());
     }
 
     private List<Employee> letViewModelHasUiState(){
@@ -123,12 +120,14 @@ public class ResultViewModelTest {
 
     @Test
     public void deleteUserSelectData() {
+
         //測試資料準備
         List<Employee> dbData = letViewModelHasUiState();
         resultViewModel.getDeleteBtnVisible().observeForever(deleteDataObserver);//一般而言觀察者會在onCreate加入,所以這必須寫在 勾選第2筆 之前,不然裡面的setValue會碰到null
         //勾選第2筆
         EmployeeUiState uiState2 = resultViewModel.getAllEmployeeStates().get(1);
         uiState2.idClick(true);
+        Assert.assertEquals(true,resultViewModel.getDeleteBtnVisible().getValue());
         //模擬動作
         when(employeeRepository.delete(Collections.singleton(uiState2.getId()))).then(new Answer<CompletableFuture<Void>>() {
             @Override
@@ -144,7 +143,7 @@ public class ResultViewModelTest {
         Assert.assertEquals(1, dbData.size());
         System.out.println("DB資料");
         System.out.println(dbData);
-        verify(deleteDataObserver).onChanged(false);
+        Assert.assertEquals(false,resultViewModel.getDeleteBtnVisible().getValue());
     }
 
     @Test

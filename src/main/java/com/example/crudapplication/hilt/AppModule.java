@@ -35,7 +35,7 @@ public class AppModule {
         AppDatabase db = Room.databaseBuilder(context, AppDatabase.class, "employee.db").build();
         //初始化測試資料
         executor.execute(()->{
-            if(db.employeeDao().count()==0){
+            if(db.employeeDao().count()==0){//模擬網路不通舊資料
                 Faker faker =new Faker(Locale.TAIWAN);
                 Random random=new Random();
                 Employee[] testEmployeeList = IntStream.range(0, 100)

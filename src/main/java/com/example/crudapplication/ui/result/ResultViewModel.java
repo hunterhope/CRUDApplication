@@ -46,6 +46,7 @@ public class ResultViewModel extends ViewModel {
             } else {
                 deleteData.remove(id);
             }
+            System.out.println("deleteBtnVisible="+(!deleteData.isEmpty()));
             deleteBtnVisible.setValue(!deleteData.isEmpty());
         };
         updateAction= updateData::setValue;
@@ -83,7 +84,8 @@ public class ResultViewModel extends ViewModel {
                 .whenComplete((success, throwable) -> {
                     if (throwable == null) {
                         deleteData.clear();
-                        deleteBtnVisible.postValue(true);
+                        System.out.println("執行清除");
+                        deleteBtnVisible.postValue(false);
                     }
                 });
     }
