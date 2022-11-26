@@ -70,4 +70,16 @@ public class EmployeeUiState {
     public boolean isClick() {
         return click;
     }
+
+    @Override
+    public String toString() {
+        return "EmployeeUiState{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", phone='" + phone + '\'' +
+                ", selected=" + selected +
+                ", click=" + click +
+                '}';
+    }
 }

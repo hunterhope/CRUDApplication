@@ -1,5 +1,6 @@
 package com.example.crudapplication.repository;
 
+import static com.example.crudapplication.TestUtil.createTestDBData;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -116,7 +117,7 @@ public class EmployeeRepositoryTest {
         Assert.assertEquals(3,employeeList.size());
         //預期結果3 資料庫有該筆資料
         Assert.assertTrue(employeeList.contains(newEmployee));
-        System.out.println("測試結束後資料庫資料");
+        System.out.println("新增後資料庫資料");
         System.out.println(employeeList);
     }
 
@@ -148,16 +149,5 @@ public class EmployeeRepositoryTest {
 
     }
 
-    @Test
-    public void getAllSync() {
-    }
 
-    private List<Employee> createTestDBData(){
-        List<Employee> employeeList=new ArrayList<>();
-        employeeList.add(new Employee(1L,"John",2,"0968751923"));
-        employeeList.add(new Employee(2L,"Mary",3,"0978570985"));
-        System.out.println("資料庫目前有:");
-        System.out.println(employeeList);
-        return employeeList;
-    }
 }
