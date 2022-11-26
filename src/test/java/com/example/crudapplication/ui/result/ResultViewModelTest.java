@@ -103,6 +103,7 @@ public class ResultViewModelTest {
         verify(observer).onChanged(expected);
         System.out.println("預期資料");
         System.out.println(expected);
+
     }
 
     @Test
