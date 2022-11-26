@@ -46,8 +46,4 @@ public class EmployeeRepository {
             return true;
         },executor);
     }
-
-    public List<Employee> getAllSync() {
-        return db.employeeDao().getAllEmployees();
-    }
 }
