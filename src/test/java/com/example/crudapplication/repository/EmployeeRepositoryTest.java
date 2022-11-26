@@ -2,16 +2,11 @@ package com.example.crudapplication.repository;
 
 import static com.example.crudapplication.TestUtil.createTestDBData;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import android.util.Log;
-
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.example.crudapplication.TestUtil;
 import com.example.crudapplication.db.AppDatabase;
@@ -23,21 +18,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.function.BiConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EmployeeRepositoryTest {
@@ -47,7 +37,6 @@ public class EmployeeRepositoryTest {
     private AppDatabase db;
     @Mock
     private EmployeeDao employeeDao;
-
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);

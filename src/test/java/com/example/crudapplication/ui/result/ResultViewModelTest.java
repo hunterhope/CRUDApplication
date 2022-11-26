@@ -130,14 +130,14 @@ public class ResultViewModelTest {
         EmployeeUiState uiState2 = resultViewModel.getAllEmployeeStates().get(1);
         uiState2.idClick(true);
         //模擬動作
-        when(employeeRepository.delete(Collections.singleton(uiState2.getId()))).then(new Answer<CompletableFuture<Boolean>>() {
+        when(employeeRepository.delete(Collections.singleton(uiState2.getId()))).then(new Answer<CompletableFuture<Void>>() {
             @Override
-            public CompletableFuture<Boolean> answer(InvocationOnMock invocation) throws Throwable {
+            public CompletableFuture<Void> answer(InvocationOnMock invocation) throws Throwable {
                 Set<Long> ids =invocation.getArgument(0);
                 ids.forEach(deleteId-> dbData.removeIf(e->e.id.equals(deleteId)));
-                return CompletableFuture.completedFuture(true);//這邊回傳是要讓viewModel真的動作,因為他還有後續動作
+                return CompletableFuture.completedFuture(null);//這邊回傳是要讓viewModel真的動作,因為他還有後續動作
             }
-        }).thenReturn(CompletableFuture.completedFuture(true));//這邊是模擬回傳的結果,因為employeeRepository是模擬,所以employeeRepository.delete()一定要有thenReturn
+        }).thenReturn(CompletableFuture.completedFuture(null));//這邊是模擬回傳的結果,因為employeeRepository是模擬,所以employeeRepository.delete()一定要有thenReturn
         //測試方法
         resultViewModel.deleteUserSelectData();
         //預期結果 dbData.size()==1 或是內部的 deleteDataObserver 要等於false

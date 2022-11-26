@@ -33,4 +33,7 @@ public interface EmployeeDao {
 
     @Query("select * from employee")
     List<Employee> getAllEmployees();
+
+    @Query("delete from employee")
+    void deleteAll();
 }

@@ -42,7 +42,7 @@ public class ResultFragment extends Fragment{
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 ResultFragment.this.menu=menu;
                 menuInflater.inflate(R.menu.result_menu,menu);
-                menu.findItem(R.id.deleteMenu).setVisible(Boolean.FALSE.equals(resultViewModel.getDeleteBtnVisible().getValue()));
+                menu.findItem(R.id.deleteMenu).setVisible(Boolean.TRUE.equals(resultViewModel.getDeleteBtnVisible().getValue()));
             }
 
             @Override

@@ -6,15 +6,15 @@ import androidx.room.Room;
 
 import com.example.crudapplication.db.AppDatabase;
 import com.example.crudapplication.db.entity.Employee;
+import com.example.crudapplication.repository.RemoteDS;
+import com.example.crudapplication.repository.RemoteDSImpl;
 import com.github.javafaker.Faker;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.inject.Singleton;
@@ -59,5 +59,9 @@ public class AppModule {
         return executorService;
     }
 
-
+    @Provides
+    @Singleton
+    public RemoteDS provideRemoteDS(){
+        return new RemoteDSImpl();
+    }
 }

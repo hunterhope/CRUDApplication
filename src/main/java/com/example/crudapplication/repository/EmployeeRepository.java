@@ -15,35 +15,53 @@ import javax.inject.Inject;
 public class EmployeeRepository {
     private final AppDatabase db;
     private final Executor executor;
+    private final RemoteDS remoteDS;
 
     @Inject
-    public EmployeeRepository(AppDatabase db, Executor executor) {
+    public EmployeeRepository(AppDatabase db, Executor executor, RemoteDS remoteDS) {
         this.db = db;
         this.executor = executor;
+        this.remoteDS = remoteDS;
     }
 
 
+    public EmployeeRepository(AppDatabase db, Executor executor) {
+        this.db = db;
+        this.executor = executor;
+        remoteDS=null;
+    }
+
+    public void getAllServerData(){
+        CompletableFuture.runAsync(()->{
+            if(remoteDS!=null){
+                List<Employee> latestEmployees=remoteDS.getAll();
+                db.runInTransaction(()->{
+                    db.employeeDao().deleteAll();
+                    db.employeeDao().insert(latestEmployees.toArray(new Employee[0]));
+                });
+            }
+
+        },executor);
+    }
     public LiveData<List<Employee>> getAll() {
         return db.employeeDao().getAll();
     }
 
-    public CompletableFuture<Boolean> delete(Set<Long> deleteData) {
-        return CompletableFuture.supplyAsync(()->{
+    public CompletableFuture<Void> delete(Set<Long> deleteData) {
+        return CompletableFuture.runAsync(()-> {
+            if(remoteDS!=null){
+                remoteDS.delete(deleteData);
+                getAllServerData();
+            }
             db.employeeDao().delete(deleteData);
-            return true;
         },executor);
     }
 
     public CompletableFuture<Long> createEmployee(Employee employee) {
-        return CompletableFuture.supplyAsync(()->{
-            return db.employeeDao().insert(employee)[0];
-        },executor);
+        return CompletableFuture.supplyAsync(()-> db.employeeDao().insert(employee)[0],executor);
     }
 
-    public CompletableFuture<Boolean> updateEmployee(Employee employee) {
-        return CompletableFuture.supplyAsync(()->{
-            db.employeeDao().update(employee);
-            return true;
-        },executor);
+    public CompletableFuture<Void> updateEmployee(Employee employee) {
+        return CompletableFuture.runAsync(()-> db.employeeDao().update(employee),executor);
     }
 }
