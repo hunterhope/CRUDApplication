@@ -1,5 +1,6 @@
 package com.example.crudapplication.ui.result;
 
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
@@ -7,11 +8,14 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.crudapplication.R;
 import com.example.crudapplication.db.entity.Employee;
+import com.example.crudapplication.db.entity.NetWorkIOResult;
 import com.example.crudapplication.repository.EmployeeRepository;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -126,7 +130,17 @@ public class ResultViewModel extends ViewModel {
         }
         return false;
     }
+    public LiveData<Optional<NetWorkIOUiState>> getNetWorkIOUiState(){
+        return Transformations.map(employeeRepository.getNetWorkIOResult(), inputOpt ->{
+            //根據訊息分類對應到msgID
+            return inputOpt.map(netWorkIOResult -> new NetWorkIOUiState(1, netWorkIOResult.dataTime));
 
+        } );
+    }
+    public void netWorkMsgHasShow(LocalDateTime key){
+        //修改資料庫已顯示欄位
+        employeeRepository.netWorkIOHasShow(key);
+    }
     public void createEmployee() {
         updateData.setValue(null);
     }

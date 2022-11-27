@@ -3,6 +3,7 @@ package com.example.crudapplication.repository;
 import com.example.crudapplication.db.entity.Employee;
 import com.github.javafaker.Faker;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -21,19 +22,18 @@ public class RemoteDSImpl implements RemoteDS{
     }
 
     @Override
-    public void delete(Set<Long> deleteData) {
+    public void delete(Set<Long> deleteData) throws IOException {
         System.out.println("刪除遠端資料");
         deleteData.forEach(id-> remoteData.removeIf(e->e.id.equals(id)));
-
     }
 
     @Override
-    public List<Employee> getAll() {
+    public List<Employee> getAll() throws IOException {
         System.out.println("撈取遠端資料");
         return remoteData;
     }
 
-    public static List<Employee> createTestDBData(){
+    public static List<Employee> createTestDBData()  {
         Faker faker =new Faker(Locale.TAIWAN);
         Random random=new Random();
         return IntStream.range(0, 100)

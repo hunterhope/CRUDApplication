@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -87,6 +88,12 @@ public class ResultFragment extends Fragment{
             if(msgId!=null){
                 Toast.makeText(getContext(), getString(msgId), Toast.LENGTH_SHORT).show();
                 resultViewModel.msgHasShow();
+            }
+        });
+        resultViewModel.getNetWorkIOUiState().observe(getViewLifecycleOwner(), optNetWorkIOUiState -> {
+            if(optNetWorkIOUiState.isPresent()){
+                Toast.makeText(requireContext(),optNetWorkIOUiState.get().getMsgId(),Toast.LENGTH_LONG).show();
+                resultViewModel.netWorkMsgHasShow(optNetWorkIOUiState.get().getKey());
             }
         });
     }
