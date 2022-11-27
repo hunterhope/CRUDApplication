@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="connect_server_timeout_from_getAllServerData_0">請檢查是否有網路,目前資料是舊的</string>
+    <string name="IOException_from_getAllServerData_1">通知開發人員</string>
+</resources>

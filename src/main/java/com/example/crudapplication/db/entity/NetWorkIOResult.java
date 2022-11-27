@@ -14,20 +14,22 @@ public class NetWorkIOResult {
     @NonNull
     public LocalDateTime dataTime;
     public Integer msgId;//自己給訊息一個分類,將來可以國際化
+    @NonNull
     public Integer hasShow;//是不是顯示過
     public String msg;//原始IO回來訊息
 
+    //equals是為了寫給測試用,沒有包含dataTime屬性,因為是瞬間,絕對不可能相等
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NetWorkIOResult that = (NetWorkIOResult) o;
-        return dataTime.equals(that.dataTime) && Objects.equals(msgId, that.msgId) && Objects.equals(hasShow, that.hasShow) && Objects.equals(msg, that.msg);
+        return Objects.equals(msgId, that.msgId) && Objects.equals(hasShow, that.hasShow) && Objects.equals(msg, that.msg);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dataTime, msgId, hasShow, msg);
+        return Objects.hash(msgId, hasShow, msg);
     }
 
     @Override

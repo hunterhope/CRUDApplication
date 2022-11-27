@@ -7,6 +7,7 @@ import com.example.crudapplication.db.entity.Employee;
 import com.example.crudapplication.db.entity.NetWorkIOResult;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +39,7 @@ public class EmployeeRepository {
         remoteDS = null;
     }
 
-    public void getAllServerData() {
+    public CompletableFuture<Void> getAllServerData() {
         if (getAllFuture != null) {
             getAllFuture.cancel(true);
         }
@@ -51,18 +52,29 @@ public class EmployeeRepository {
                         db.employeeDao().deleteAll();
                         db.employeeDao().insert(latestEmployees.toArray(new Employee[0]));
                     });
-                } catch (IOException ex) {
+                }catch (SocketTimeoutException ex){
                     getAllFuture.completeExceptionally(ex);
                     //存入資料庫一則例外訊息
                     NetWorkIOResult netWorkIOResult = new NetWorkIOResult();
                     netWorkIOResult.dataTime= LocalDateTime.now();
                     netWorkIOResult.msgId =0;
                     netWorkIOResult.msg=ex.getLocalizedMessage();
+                    netWorkIOResult.hasShow=0;
+                    db.netWorkIOResultDao().insert(netWorkIOResult);
+                }
+                catch (IOException ex) {
+                    getAllFuture.completeExceptionally(ex);
+                    //存入資料庫一則例外訊息
+                    NetWorkIOResult netWorkIOResult = new NetWorkIOResult();
+                    netWorkIOResult.dataTime= LocalDateTime.now();
+                    netWorkIOResult.msgId =1;
+                    netWorkIOResult.msg=ex.getLocalizedMessage();
+                    netWorkIOResult.hasShow=0;
                     db.netWorkIOResultDao().insert(netWorkIOResult);
                 }
             }
         }, executor);
-
+        return getAllFuture;
     }
 
     public LiveData<Optional<NetWorkIOResult>> getNetWorkIOResult(){
