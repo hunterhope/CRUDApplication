@@ -36,6 +36,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        dataBinding true
     }
 }
 
@@ -53,11 +54,19 @@ dependencies {
 //    testImplementation 'org.junit.jupiter:junit-jupiter'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
-    //測試用,自己加
+//    androidTestImplementation 'androidx.test:runner:1.5.1'
+//    androidTestImplementation 'androidx.test:rules:1.5.0'
+
+    /*測試用,自己加------開始*/
+
+    //一般背景任務在測試時,無法與espresso同步產生,解決方案就是靠idling-resource而不要去用Thread.sleep等方式;還有另外一種設計方式,在build中設定一歇腳本...
+    //先學idling-resource方式
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.5.0'//測試用 模擬背景任務要用的 空轉資源
+
     testImplementation "org.mockito:mockito-core:4.5.1"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testImplementation "androidx.arch.core:core-testing:2.1.0"
-
+    /*測試用,自己加------結束*/
 
     //room需要的設定
     def room_version = "2.4.3"
