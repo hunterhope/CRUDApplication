@@ -2,13 +2,22 @@ package com.example.crudapplication.db.dao;
 
 
 import androidx.lifecycle.LiveData;
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.Query;
 
-import com.example.crudapplication.repository.EmployeeJson;
+import com.example.crudapplication.db.entity.Employee;
 
 import java.util.List;
 
+@Dao
 public interface EmployeeDao {
-    void updateLatestData(EmployeeJson... employeeJson);
+    @Insert
+    void insert(Employee... employees);
 
-    LiveData<List<EmployeeJson>> getAll();
+    @Query("select * from employee order by id desc")
+    LiveData<List<Employee>> getAll();
+
+    @Query("delete from employee")
+    void deleteAll();
 }

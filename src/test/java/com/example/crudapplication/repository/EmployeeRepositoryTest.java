@@ -1,5 +1,6 @@
 package com.example.crudapplication.repository;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -8,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.crudapplication.db.AppDatabase;
 import com.example.crudapplication.db.dao.EmployeeDao;
+import com.example.crudapplication.db.entity.Employee;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
-import java.util.function.BiConsumer;
 
 @RunWith(JUnit4.class)
 public class EmployeeRepositoryTest {
@@ -50,7 +51,8 @@ public class EmployeeRepositoryTest {
     public void remote_fetch_And_save_DB_test() throws IOException {
         //測試資料: 輸入:遠端要有資料
         List<EmployeeJson> remoteData=new ArrayList<>();
-        remoteData.add(new EmployeeJson());
+        remoteData.add(new EmployeeJson(1L,"John",18,"0968751923"));
+        remoteData.add(new EmployeeJson(2L,"John2",18,"0968751922"));
         //測試物件: EmployeeRepository, 依賴物件: EmployeeRemoteDS,本地資料庫,執行緒池
         //模擬動作
         when(db.employeeDao()).thenReturn(employeeDao);
@@ -59,8 +61,18 @@ public class EmployeeRepositoryTest {
         employeeRepository.fetchAll().join();
         //驗證方式: 1.EmployeeRemoteDS的fetchAll有被呼叫到一次
         verify(employeeRemoteDS).fetchAll();
-        //驗證方式: 2.資料庫employeeDao.updateLatestData()有被呼叫到,且有內容
-        verify(db.employeeDao()).updateLatestData(remoteData.toArray(new EmployeeJson[0]));
+        //驗證方式: 2.資料庫db.runInTransaction()有被呼叫到(重構程式碼後修改測試,why?測是不是要一值保有?)
+        verify(db).runInTransaction(any(Runnable.class));
+        //驗證方式: 2.資料庫employeeDao.insert()有被呼叫到,且有內容
+//        Employee[] expected= remoteData.stream().map(e-> {
+//            Employee employee=new Employee();
+//            employee.id=e.getId();
+//            employee.name=e.getName();
+//            employee.age=e.getAge();
+//            employee.phone=e.getCellPhone();
+//            return employee;
+//        }).toArray(Employee[]::new);
+//        verify(db.employeeDao()).insert(expected);
 
     }
     /*
@@ -109,14 +121,14 @@ public class EmployeeRepositoryTest {
     @Test
     public void isReceive_DB_LiveData_test(){
         //測試資料: 假的網路資料
-        List<EmployeeJson> webData=new ArrayList<>();
-        webData.add(new EmployeeJson());
+        List<Employee> webData=new ArrayList<>();
+        webData.add(new Employee());
         //模擬相依物件動作
         when(db.employeeDao()).thenReturn(employeeDao);
         when(employeeDao.getAll()).thenReturn(new MutableLiveData<>(webData));
         //測試物件: EmployeeRepository, 依賴物件: EmployeeRemoteDS,本地資料庫,執行緒池
         //測試方法
-        LiveData<List<EmployeeJson>> dbData =employeeRepository.getAllEmployee();
+        LiveData<List<Employee>> dbData =employeeRepository.getAllEmployee();
         //預期結果 dbData內容與測試資料相同
         //驗證方式
         Assert.assertEquals(webData,dbData.getValue());

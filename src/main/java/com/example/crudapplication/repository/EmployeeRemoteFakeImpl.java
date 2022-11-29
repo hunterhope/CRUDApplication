@@ -9,11 +9,17 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.stream.LongStream;
 
+import javax.inject.Inject;
+
 public class EmployeeRemoteFakeImpl implements EmployeeRemoteDS {
     private List<EmployeeJson> fakeRemoteDB;
 
+    @Inject
+    public EmployeeRemoteFakeImpl() {
+    }
+
     @Override
-    public List<EmployeeJson> fetchAll() throws IOException {
+    public List<EmployeeJson> fetchAll() {
         fakeRemoteDB=new ArrayList<>();
         Faker faker=new Faker(Locale.TAIWAN);
         Random random=new Random();

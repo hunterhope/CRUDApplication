@@ -13,6 +13,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.example.crudapplication.db.entity.Employee;
 import com.example.crudapplication.repository.EmployeeJson;
 import com.example.crudapplication.repository.EmployeeRepository;
 
@@ -52,7 +53,7 @@ public class ReadViewModelTest {
     @Test
     public void use_repository_get_employee_data_test() {
         //測試資料 3個Json員工
-        List<EmployeeJson> webData=TestUtil.createEmployeeList(3);
+        List<Employee> webData=TestUtil.createEmployeeList(3);
         //測試物件 ReadViewModel 相依物件 EmployeeRepository
         //模擬方法
         when(employeeRepository.getAllEmployee()).thenReturn(new MutableLiveData<>(webData));
@@ -69,7 +70,7 @@ public class ReadViewModelTest {
     @Test
     public void use_repository_get_employee_empty_data_test(){
         //測試資料 3個Json員工
-        List<EmployeeJson> webData=TestUtil.createEmployeeList(0);
+        List<Employee> webData=TestUtil.createEmployeeList(0);
         //測試物件 ReadViewModel 相依物件 EmployeeRepository
         //模擬方法
         when(employeeRepository.getAllEmployee()).thenReturn(new MutableLiveData<>(webData));

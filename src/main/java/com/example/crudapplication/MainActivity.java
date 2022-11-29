@@ -16,6 +16,9 @@ import androidx.test.espresso.IdlingResource;
 
 import com.example.crudapplication.databinding.ActivityMainBinding;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
     private SimpleIdlingResource mIdlingResource;//測試用空轉資源,模擬背景任務的訊息
 

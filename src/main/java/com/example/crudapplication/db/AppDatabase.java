@@ -1,7 +1,12 @@
 package com.example.crudapplication.db;
 
-import com.example.crudapplication.db.dao.EmployeeDao;
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
 
-public abstract class AppDatabase {
+import com.example.crudapplication.db.dao.EmployeeDao;
+import com.example.crudapplication.db.entity.Employee;
+
+@Database(entities = {Employee.class},version = 1)
+public abstract class AppDatabase extends RoomDatabase {
     public abstract EmployeeDao employeeDao();
 }
