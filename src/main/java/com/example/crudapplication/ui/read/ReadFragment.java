@@ -14,8 +14,8 @@ public class ReadFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        ReadViewModel readViewModel =
+                new ViewModelProvider(this).get(ReadViewModel.class);
 
 
         return null;

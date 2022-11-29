@@ -3,6 +3,9 @@ package com.example.crudapplication.repository;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.crudapplication.db.AppDatabase;
 import com.example.crudapplication.db.dao.EmployeeDao;
 
@@ -97,5 +100,25 @@ public class EmployeeRepositoryTest {
         verify(employeeRemoteDS).fetchAll();
         //驗證方式: 1.future結束於例外
         Assert.assertTrue(future.isCompletedExceptionally());
+    }
+
+    /*
+    * 抓取回來的資料存入資料庫,後會通知給前端
+    * 所以前端將來要一直觀察本地資料庫變化    *
+    * */
+    @Test
+    public void isReceive_DB_LiveData_test(){
+        //測試資料: 假的網路資料
+        List<EmployeeJson> webData=new ArrayList<>();
+        webData.add(new EmployeeJson());
+        //模擬相依物件動作
+        when(db.employeeDao()).thenReturn(employeeDao);
+        when(employeeDao.getAll()).thenReturn(new MutableLiveData<>(webData));
+        //測試物件: EmployeeRepository, 依賴物件: EmployeeRemoteDS,本地資料庫,執行緒池
+        //測試方法
+        LiveData<List<EmployeeJson>> dbData =employeeRepository.getAllEmployee();
+        //預期結果 dbData內容與測試資料相同
+        //驗證方式
+        Assert.assertEquals(webData,dbData.getValue());
     }
 }

@@ -1,5 +1,7 @@
 package com.example.crudapplication.repository;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.crudapplication.db.AppDatabase;
 
 import java.io.IOException;
@@ -8,8 +10,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class EmployeeRepository {
-    private EmployeeRemoteDS employeeRemoteDS;
-    private AppDatabase db;
+    private final EmployeeRemoteDS employeeRemoteDS;
+    private final AppDatabase db;
     private final Executor executor;
     private CompletableFuture<Void> fetchRemoteDataFuture;
 
@@ -36,5 +38,9 @@ public class EmployeeRepository {
             }
         },executor);
         return fetchRemoteDataFuture;
+    }
+
+    public LiveData<List<EmployeeJson>> getAllEmployee() {
+        return db.employeeDao().getAll();
     }
 }
