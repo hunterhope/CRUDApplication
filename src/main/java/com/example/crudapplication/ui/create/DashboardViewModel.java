@@ -1,4 +1,4 @@
-package com.example.crudapplication.ui.dashboard;
+package com.example.crudapplication.ui.create;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

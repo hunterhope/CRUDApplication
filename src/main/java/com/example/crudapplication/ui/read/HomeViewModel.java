@@ -1,4 +1,4 @@
-package com.example.crudapplication.ui.home;
+package com.example.crudapplication.ui.read;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

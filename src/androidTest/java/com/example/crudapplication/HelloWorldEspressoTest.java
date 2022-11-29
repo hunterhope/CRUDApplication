@@ -55,13 +55,13 @@ public class HelloWorldEspressoTest {
         onView(withText("This is home fragment")).check(matches(isDisplayed()));
 
         //測試 下方導航按鈕dashboard按下,會出現 This is dashboard fragment
-        onView(withId(R.id.navigation_dashboard)).perform(click());
+        onView(withId(R.id.navigation_c)).perform(click());
         onView(withText("This is dashboard fragment")).check(matches(isDisplayed()));
         //測試 下方導航按鈕Notifications按下,會出現 This is notifications fragment
-        onView(withId(R.id.navigation_notifications)).perform(click());
-        onView(withText("This is notifications fragment")).check(matches(isDisplayed()));
+//        onView(withId(R.id.navigation_notifications)).perform(click());
+//        onView(withText("This is notifications fragment")).check(matches(isDisplayed()));
         //測試 下方導航按鈕home按下,會出現 This is home fragment
-        onView(withId(R.id.navigation_home)).perform(click());
+        onView(withId(R.id.navigation_r)).perform(click());
         onView(withText("This is home fragment")).check(matches(isDisplayed()));
 
     }
