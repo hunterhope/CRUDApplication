@@ -49,6 +49,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation 'androidx.navigation:navigation-fragment:2.5.3'
     implementation 'androidx.navigation:navigation-ui:2.5.3'
+
     //測試用的library
     testImplementation 'junit:junit:4.13.2'
 //    testImplementation 'org.junit.jupiter:junit-jupiter'
@@ -63,6 +64,8 @@ dependencies {
     //先學idling-resource方式
     implementation 'androidx.test.espresso:espresso-idling-resource:3.5.0'//測試用 模擬背景任務要用的 空轉資源
 
+    //測試 要抓RecycleView內的Item套件
+    implementation 'androidx.test.espresso:espresso-contrib:3.5.0'
     testImplementation "org.mockito:mockito-core:4.5.1"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testImplementation "androidx.arch.core:core-testing:2.1.0"

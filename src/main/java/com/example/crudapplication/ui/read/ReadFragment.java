@@ -37,8 +37,6 @@ public class ReadFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         readViewModel.getAllEmployee().observe(getViewLifecycleOwner(),employeeUiStates ->{
-            System.out.println("通知Adapter改變");
-            System.out.println(employeeUiStates);
             adapter.setData(employeeUiStates);
         });
         readViewModel.fetchLatestEmployee();

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.crudapplication.databinding.EmployeeItemBinding;
 import com.example.crudapplication.ui.read.EmployeeUiState;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;

@@ -1,5 +1,7 @@
 package com.example.crudapplication.ui.read;
 
+import java.util.Objects;
+
 public class EmployeeUiState {
     private Long id;
     private String name;
@@ -27,6 +29,19 @@ public class EmployeeUiState {
 
     public String getPhone() {
         return phone;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EmployeeUiState that = (EmployeeUiState) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(age, that.age) && Objects.equals(phone, that.phone);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, age, phone);
     }
 
     @Override

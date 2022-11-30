@@ -1,6 +1,7 @@
 package com.example.crudapplication.ui.read;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,7 +28,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @RunWith(JUnit4.class)
 public class ReadViewModelTest {
@@ -61,7 +65,13 @@ public class ReadViewModelTest {
         readViewModel.getAllEmployee().observeForever(employeeUiStateObserver);
         //預期結果 有發生一次狀態改變
         //驗證
-        verify(employeeUiStateObserver,times(1)).onChanged(anyList());
+        List<EmployeeUiState> test = webData.stream().map(e -> new EmployeeUiState(e.id,e.name,e.age,e.phone)).collect(Collectors.toList());
+        verify(employeeUiStateObserver,times(1)).onChanged(test);
+        Void Void = null;
+        when(employeeRepository.fetchAll()).thenReturn(CompletableFuture.completedFuture(Void));
+        readViewModel.fetchLatestEmployee();
+        verify(employeeUiStateObserver,times(2)).onChanged(any());
+
     }
 
     /*
@@ -78,6 +88,6 @@ public class ReadViewModelTest {
         readViewModel.getAllEmployee().observeForever(employeeUiStateObserver);
         //預期結果 有發生一次狀態改變
         //驗證
-        verify(employeeUiStateObserver,times(1)).onChanged(anyList());
+        verify(employeeUiStateObserver,times(1)).onChanged(Collections.emptyList());
     }
 }

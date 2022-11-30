@@ -44,7 +44,9 @@ public class EmployeeRepository {
                             e.phone= json.getCellPhone();
                             return e;
                         }).toArray(Employee[]::new));
+                        System.out.println("做完交易");
                     });
+                    System.out.println("做完交易");
                 }
             } catch (IOException e) {
                 fetchRemoteDataFuture.completeExceptionally(e);
